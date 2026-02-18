@@ -5,129 +5,198 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rutgers Dashboard Local Preview</title>
   <style>
-    :root { --rutgers-red:#cc0033; --bg:#ececf1; --card:#f5f5f6; --line:#d7d7df; --muted:#64748b; }
+    :root { --rutgers-red:#cc0033; --bg:#e9e9ee; --card:#f4f4f7; --line:#d6d8e1; --muted:#64748b; }
     *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:#0f172a}
-    .layout{display:grid;grid-template-columns:74px 1fr;min-height:100vh}
-    .sidebar{background:var(--rutgers-red);display:flex;flex-direction:column;align-items:center;gap:12px;padding:14px 10px}
-    .navBtn{width:42px;height:42px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.15);border-radius:10px;color:#fff}
-    .topbar{height:54px;background:#f8f8fa;border-bottom:1px solid #dedee6;display:flex;justify-content:space-between;align-items:center;padding:0 18px}
-    .brand{display:flex;gap:10px;align-items:baseline}.brand strong{color:var(--rutgers-red)}.brand span{color:#6b7280;font-size:.9rem}
-    .content{max-width:1120px;padding:22px;margin:0 auto}.content h1{margin:0 0 14px;font-size:2rem}
-    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-    .card{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--rutgers-red);border-radius:10px;padding:12px;min-height:220px;display:flex;flex-direction:column;gap:10px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
-    .profile{min-height:360px}
-    .card h2{margin:0;color:var(--rutgers-red);font-size:1.3rem}
-    .tabs{display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid #d9d9e2;padding-bottom:6px}
-    .tab{border:none;background:none;color:#6b7280;padding:0 2px 6px;cursor:pointer}.tab.active{color:var(--rutgers-red);border-bottom:2px solid var(--rutgers-red)}
-    .avatar{width:72px;height:72px;border-radius:999px;background:#dddfe6;display:grid;place-items:center;font-size:1.6rem;margin:0 auto}
-    .center{text-align:center;margin:0}.muted{color:var(--muted);margin:0}
-    .quick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.quick a,.actions a,.links a{color:#334155;text-decoration:none;font-size:.85rem}
-    .empty{text-align:center;color:var(--muted);margin:auto 0}
-    .ok{display:grid;place-items:center;text-align:center;color:var(--muted);margin:auto 0}.ok span{font-size:2rem;color:#16a34a}
-    .term{display:flex;align-items:center;gap:8px;font-size:.85rem} select{border:1px solid #d1d5db;border-radius:6px;background:#fff;padding:.2rem .4rem}
-    ul.clean{list-style:none;padding:0;margin:0;display:grid;gap:8px}
-    .grade li{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e4e4ea;padding-bottom:4px}
-    .actionText{border:none;background:none;color:var(--rutgers-red);padding:0;cursor:pointer;width:fit-content;font-weight:600}
-    .moneyTile{background:var(--rutgers-red);color:#fff;border-radius:8px;padding:10px}.moneyTile p{margin:0}.moneyTile p:last-child{margin-top:6px;font-weight:700;font-size:1.2rem}
-    .actions{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid #c4c4d0;background:#fff;border-radius:6px;padding:.4rem .65rem;cursor:pointer}
-    .metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:auto}.metrics div{border:3px solid var(--rutgers-red);border-radius:999px;height:74px;display:grid;place-items:center;text-align:center}.metrics span{font-size:.72rem;color:var(--muted)}
-    .aid{background:#eef1f5;padding:10px;border-radius:8px}.bar{height:8px;border-radius:999px;background:#e2e8f0;margin:8px 0}.bar div{width:80%;height:100%;background:#16a34a;border-radius:inherit}
-    .filled{margin-top:auto;text-decoration:none;text-align:center;background:var(--rutgers-red);color:#fff;border-radius:6px;padding:.6rem;font-weight:600}
-    .modalWrap{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;place-items:center;padding:16px}
-    .modal{width:min(760px,100%);background:#fff;border-radius:10px;padding:16px;max-height:90vh;overflow:auto}
-    table{width:100%;border-collapse:collapse} th,td{border:1px solid #dce0e7;padding:.5rem;text-align:left}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:#1f2937}
+    .layout{min-height:100vh;display:grid;grid-template-columns:82px 1fr}
+    .sidebar{background:var(--rutgers-red);padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:12px}
+    .navBtn{width:48px;height:48px;border:none;background:rgba(255,255,255,.17);color:#fff;border-radius:12px;font-size:1.25rem}
+    .topBar{height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:#fff;border-bottom:1px solid #e2e8f0}
+    .brand{display:flex;gap:12px;align-items:baseline}.brand strong{color:var(--rutgers-red);font-size:2.15rem}.brand span{color:#475569;font-size:1.95rem}
+    .topActions button{border:none;background:transparent;font-size:2rem;margin-left:16px;color:#64748b;cursor:pointer}
+    .dashboard{max-width:1600px;margin:0 auto;width:100%;padding:22px}.dashboard h1{margin:0 0 14px;font-size:2.45rem}
+    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+    .card{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--rutgers-red);border-radius:12px;padding:14px;min-height:260px;display:flex;flex-direction:column;gap:10px;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+    .profileCard{min-height:540px}
+    .card h2{margin:0;font-size:2.4rem;color:var(--rutgers-red)}
+    .tabs{display:flex;flex-wrap:wrap;gap:12px;border-bottom:1px solid #d8dce5;padding-bottom:7px}
+    .tab{border:none;background:none;color:#64748b;padding:0 0 7px;cursor:pointer;font-size:1.4rem}.tab.active{color:var(--rutgers-red);border-bottom:2px solid var(--rutgers-red)}
+    .avatar{width:92px;height:92px;border-radius:999px;display:grid;place-items:center;margin:2px auto;background:#d5d9e2;font-size:2.2rem}
+    .center{text-align:center;margin:0}.strong{font-weight:700}.muted{margin:0;color:var(--muted)}.tiny{font-size:1.05rem}
+    .quickBlock{margin-top:auto;border-top:1px solid #d8dce5;padding-top:10px}.quick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+    .quick button{border:none;background:none;display:grid;justify-items:center;gap:3px;padding:6px;color:#475569}.quick span{font-size:1.5rem}.quick small{font-size:1.05rem}
+    .empty{display:grid;place-items:center;gap:4px;color:var(--muted);margin:auto 0;text-align:center;font-size:1.4rem}.empty span{font-size:4rem;color:#14b64f;line-height:1}
+    .term select{border:1px solid #cbd5e1;border-radius:6px;background:#fff;padding:.25rem .5rem;font-size:1.3rem}
+    ul.clean{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:1.3rem}
+    .grade li{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e2e8f0;padding-bottom:6px}.grade p{margin:0;font-size:1.05rem;color:var(--muted)}.grade span{color:var(--rutgers-red);font-weight:700}
+    .textAction{border:none;background:none;color:var(--rutgers-red);padding:0;width:fit-content;font-weight:600;font-size:1.3rem;cursor:pointer}
+    .plain{border:none;background:none;color:#334155;text-align:left;padding:0;cursor:pointer;font-size:1.3rem}.links{display:flex;flex-direction:column;gap:6px;margin-top:auto}.links a{color:#334155;text-decoration:none;font-size:1.3rem}
+    .moneyTile{background:var(--rutgers-red);color:#fff;border-radius:10px;padding:11px}.moneyTop{display:flex;justify-content:space-between;align-items:center}.moneyTop p{margin:0;font-size:1.15rem}.moneyTop button{border:none;background:none;color:#fff;font-size:1.2rem;cursor:pointer}.moneyAmount{margin:8px 0 0;font-weight:700;font-size:2.1rem}
+    .moneyMeta{display:flex;justify-content:space-between;align-items:center;font-size:1.2rem}.actions{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}.splitTop{border-top:1px solid #e2e8f0;padding-top:10px}.btn{border:1px solid #d1d5db;background:#eceef3;border-radius:6px;padding:.45rem .65rem;cursor:pointer;font-size:1.25rem}
+    .program{font-size:1.6rem;font-weight:700;margin:0}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:auto}.metrics div{display:grid;justify-items:center;text-align:center}.metrics strong{width:88px;height:88px;border:4px solid var(--rutgers-red);border-radius:999px;display:grid;place-items:center;font-size:2rem}.metrics span{margin-top:4px;font-size:1.2rem;color:var(--muted)}.metrics small{font-size:1.1rem;color:#475569}
+    .aidSummary{background:#e9edf3;padding:10px;border-radius:8px}.aidSummary p{margin:0 0 6px;color:#475569;font-size:1.1rem}.bar{height:9px;border-radius:999px;background:#d7dee8;margin-bottom:6px}.bar div{width:82%;height:100%;background:#15b94e;border-radius:inherit}
+    .filled{margin-top:auto;text-decoration:none;text-align:center;background:var(--rutgers-red);color:#fff;border-radius:6px;padding:.7rem;font-weight:600;font-size:1.2rem}
+    .modalWrap{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;place-items:center;padding:1rem;z-index:1000}
+    .modal{width:min(760px,100%);background:#fff;border-radius:10px;padding:1rem;max-height:90vh;overflow:auto}
+    table{width:100%;border-collapse:collapse}th,td{border:1px solid #dce0e7;padding:.5rem;text-align:left}
     @media (max-width:1200px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    @media (max-width:760px){.layout{grid-template-columns:1fr}.sidebar{flex-direction:row;justify-content:center;overflow-x:auto}.content{padding:14px}.grid{grid-template-columns:1fr}}
+    @media (max-width:760px){.layout{grid-template-columns:1fr}.sidebar{flex-direction:row;justify-content:center;overflow-x:auto}.topBar{height:auto;padding:10px;flex-wrap:wrap;gap:8px}.brand strong{font-size:1.7rem}.brand span{font-size:1.3rem}.topActions button{font-size:1.3rem}.dashboard{padding:14px}.dashboard h1{font-size:1.8rem}.grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
   <main class="layout">
-    <aside class="sidebar" aria-label="Main navigation">
-      <button class="navBtn">▦</button><button class="navBtn">📘</button><button class="navBtn">🔔</button><button class="navBtn">🎓</button>
-      <button class="navBtn">💵</button><button class="navBtn">📅</button><button class="navBtn">⚙️</button><button class="navBtn">?</button>
+    <aside class="sidebar">
+      <button class="navBtn">⊞</button><button class="navBtn">◫</button><button class="navBtn">◔</button><button class="navBtn">⎓</button>
+      <button class="navBtn">$</button><button class="navBtn">◷</button><button class="navBtn">⚙</button><button class="navBtn">?</button>
     </aside>
 
     <section>
-      <header class="topbar"><div class="brand"><strong>RUTGERS</strong><span>myRutgers Portal</span></div><div>＋ 🔔 🔍 ↪</div></header>
-      <div class="content">
+      <header class="topBar">
+        <div class="brand"><strong>RUTGERS</strong><span>myRutgers Portal</span></div>
+        <div class="topActions"><button>＋</button><button>◔</button><button>⌕</button><button>↪</button></div>
+      </header>
+
+      <section class="dashboard">
         <h1>My Dashboard</h1>
         <section class="grid">
-          <article class="card profile">
-            <h2>My Profile</h2>
-            <div class="tabs"><button class="tab active">Active</button><button class="tab">History</button></div>
+          <article class="card profileCard">
+            <h2>User Profile</h2>
             <div class="avatar">👤</div>
-            <p class="center">Tarun Tata</p>
-            <p class="center muted">Student · Rutgers</p>
-            <div class="quick"><a href="#">Password</a><a href="#">Privacy</a><a href="#">Phone</a><a href="#">ID Card</a></div>
+            <p class="center strong">Tarun Tata</p>
+            <p class="center muted">NetID: tt123</p>
+            <p class="center muted">RUID: 123456789</p>
+            <p class="center muted">tarun.tata@rutgers.edu</p>
+            <p class="center muted">Student</p>
+            <p class="center muted tiny">Newark College of Arts & Sciences</p>
+            <div class="quickBlock">
+              <p class="muted tiny">Quick Actions</p>
+              <div class="quick">
+                <button><span>⌂</span><small>Password</small></button><button><span>⌁</span><small>Privacy</small></button><button><span>✆</span><small>Phone</small></button><button><span>▣</span><small>ID Card</small></button>
+                <button><span>♡</span><small>Health</small></button><button><span>♡</span><small>Wellness</small></button>
+              </div>
+            </div>
           </article>
+
           <article class="card">
             <h2>My Notifications</h2>
             <div class="tabs"><button class="tab active">Active</button><button class="tab">History</button></div>
-            <div class="ok"><span>✅</span><p>You're all caught up!</p></div>
-            <button class="actionText" id="readBtn">Mark all as read</button>
+            <div class="empty"><span>✓</span><p>You're all caught up!</p></div>
           </article>
+
           <article class="card">
             <h2>My Course Activity</h2>
             <div class="tabs"><button class="tab active">By Course</button><button class="tab">By Date</button><button class="tab">By History</button></div>
-            <ul class="clean"><li>CS 352: Assignment 2 submitted</li><li>MATH 477: Quiz 4 posted</li></ul>
+            <div class="tabs"><button class="tab active">Activity</button><button class="tab">Grades</button></div>
+            <div class="empty"><span>✓</span><p>No Course Activity Data</p></div>
           </article>
+
           <article class="card">
             <h2>My Course Schedule</h2>
-            <div class="term"><label for="term">Term</label><select id="term"><option>Spring 2026</option><option>Fall 2025</option></select></div>
-            <div class="tabs"><button class="tab active">Active</button><button class="tab">History</button></div>
-            <p class="empty">No Course Schedule Data</p>
-            <div class="links"><button class="actionText" id="csvBtn">Export Course Schedule</button><a href="#">Expand Course Schedule</a></div>
+            <div class="term"><select id="term"><option>Spring 2026</option><option>Fall 2025</option><option>Summer 2025</option></select></div>
+            <div class="empty"><span>✓</span><p id="scheduleText">No Course Schedule Data</p></div>
+            <button class="textAction" id="toggleSchedule">Self Reporting Absence</button>
+            <div class="links"><button class="plain" id="csvBtn">⤓ Export Course Schedule</button><a href="#">↗ Expand Course Schedule</a></div>
           </article>
+
           <article class="card">
             <h2>My Grades</h2>
-            <div class="term"><label for="gterm">Term</label><select id="gterm"><option>Fall 2025</option><option>Spring 2025</option></select></div>
-            <ul class="clean grade"><li><div><strong>Data Structures</strong><p class="muted">Computer Science</p></div><span>A</span></li><li><div><strong>Algorithms</strong><p class="muted">Computer Science</p></div><span>A-</span></li><li><div><strong>Database Systems</strong><p class="muted">Computer Science</p></div><span>B+</span></li></ul>
-            <button class="actionText" id="openTranscript">Unofficial Transcript</button>
+            <div class="term"><select id="gradeTerm"><option>Fall 2025</option><option>Spring 2026</option><option>Summer 2025</option></select></div>
+            <ul class="clean grade" id="gradesList"></ul>
+            <button class="textAction" id="openTranscript">↗ Unofficial Transcript</button>
           </article>
+
           <article class="card">
             <h2>My Money</h2>
-            <div class="moneyTile"><p>Account Balance</p><p id="balance">••••••</p></div>
-            <p>Payment Due: $1,500.00</p><p>Billable Credit Hours: 15</p>
-            <div class="actions"><a href="#">View Billing</a><button class="btn" id="toggleBalance">Show balance</button></div>
+            <div class="moneyTile"><div class="moneyTop"><p>Account Balance</p><button id="toggleBalance">◎</button></div><p class="moneyAmount" id="balance">••••••</p></div>
+            <div class="moneyMeta"><span>Payment Due</span><strong>$1,500.00</strong></div>
+            <div class="moneyMeta"><span>Billable Credit Hours</span><strong>15</strong></div>
+            <div class="actions splitTop"><button class="btn">$ View Billing</button><button class="btn">▭ Make Payment</button></div>
           </article>
+
           <article class="card">
             <h2>My Degree</h2>
-            <p><strong>Computer Science</strong></p><p class="muted">School of Arts & Sciences</p>
-            <div class="metrics"><div><strong>3.8</strong><span>GPA</span></div><div><strong>3.7</strong><span>Cumulative GPA</span></div><div><strong>90</strong><span>Credits</span></div></div>
+            <p class="program">Computer Science</p>
+            <p class="muted">Newark College of Arts & Sciences</p>
+            <div class="metrics"><div><strong>3.8</strong><span>GPA</span><small>Last Semester</small></div><div><strong>3.7</strong><span>GPA</span><small>Cumulative</small></div><div><strong>90</strong><span>Credits</span><small>Total Degree</small></div></div>
           </article>
+
           <article class="card">
             <h2>My Financial Aid</h2>
             <div class="tabs"><button class="tab">Apply</button><button class="tab">Docs</button><button class="tab">Notifs</button><button class="tab active">Award</button></div>
-            <p>Award Year: July 2025 – June 2026</p>
-            <div class="aid"><span>Award Summary</span><div class="bar"><div></div></div><strong>$15,000</strong></div>
-            <a href="#" class="filled">Award Detail and Information</a>
+            <p class="muted">Award Year</p>
+            <p class="strong">July 2025 – June 2026</p>
+            <div class="aidSummary"><p>Award Summary</p><div class="bar"><div></div></div><strong>$15,000</strong></div>
+            <a href="#" class="filled">▣ Award Detail and Information</a>
           </article>
         </section>
-      </div>
+      </section>
     </section>
   </main>
 
   <div class="modalWrap" id="modalWrap" aria-hidden="true">
     <section class="modal" role="dialog" aria-modal="true" aria-labelledby="transcriptTitle">
       <h2 id="transcriptTitle">Unofficial Transcript</h2>
-      <table><thead><tr><th>Course</th><th>Grade</th><th>Term</th></tr></thead><tbody><tr><td>Data Structures</td><td>A</td><td>Fall 2025</td></tr><tr><td>Algorithms</td><td>A-</td><td>Fall 2025</td></tr></tbody></table>
+      <table><thead><tr><th>Course</th><th>Grade</th><th>Term</th></tr></thead><tbody id="transcriptBody"></tbody></table>
       <div class="actions"><button class="btn" onclick="window.print()">Open Printable View</button><button class="btn" id="pdfBtn">Download PDF (Placeholder)</button><button class="btn" id="closeModal">Close</button></div>
       <p id="pdfMessage" class="muted" aria-live="polite"></p>
     </section>
   </div>
 
   <script>
+    const terms = ["Spring 2026", "Fall 2025", "Summer 2025"];
+    const gradesByTerm = {
+      "Spring 2026": [],
+      "Fall 2025": [
+        { course: "Data Structures", major: "Computer Science", score: "A", term: "Fall 2025" },
+        { course: "Algorithms", major: "Computer Science", score: "A-", term: "Fall 2025" },
+        { course: "Database Systems", major: "Computer Science", score: "B+", term: "Fall 2025" },
+        { course: "Operating Systems", major: "Computer Science", score: "A", term: "Fall 2025" },
+      ],
+      "Summer 2025": [],
+    };
+    const scheduleByTerm = {
+      "Spring 2026": [],
+      "Fall 2025": [
+        ["CS 352", "Internet Technology", "Mon/Wed", "10:20 AM", "Hill 116"],
+        ["MATH 477", "Mathematical Probability", "Tue/Thu", "1:10 PM", "Allison 203"],
+      ],
+      "Summer 2025": [],
+    };
+
     const modalWrap = document.getElementById('modalWrap');
     const openTranscript = document.getElementById('openTranscript');
     const closeModal = document.getElementById('closeModal');
     const pdfBtn = document.getElementById('pdfBtn');
     const pdfMessage = document.getElementById('pdfMessage');
-    const readBtn = document.getElementById('readBtn');
     const toggleBalance = document.getElementById('toggleBalance');
     const balance = document.getElementById('balance');
     const csvBtn = document.getElementById('csvBtn');
-    let visible = false;
+    const termSelect = document.getElementById('term');
+    const gradeTerm = document.getElementById('gradeTerm');
+    const gradesList = document.getElementById('gradesList');
+    const transcriptBody = document.getElementById('transcriptBody');
+    const scheduleText = document.getElementById('scheduleText');
+    const toggleSchedule = document.getElementById('toggleSchedule');
+
+    let showBalance = false;
+    let historyMode = false;
+
+    const renderGrades = () => {
+      const term = gradeTerm?.value || terms[0];
+      const grades = gradesByTerm[term] || [];
+      gradesList.innerHTML = grades.length
+        ? grades.map((g) => `<li><div><strong>${g.course}</strong><p>${g.major}</p></div><span>${g.score}</span></li>`).join('')
+        : '<li><p class="muted">Grades will appear once posted.</p></li>';
+
+      transcriptBody.innerHTML = grades.length
+        ? grades.map((g) => `<tr><td>${g.course}</td><td>${g.score}</td><td>${g.term}</td></tr>`).join('')
+        : '<tr><td colspan="3">No transcript records in this term.</td></tr>';
+    };
+
+    const updateScheduleText = () => {
+      const hasSchedule = (scheduleByTerm[termSelect?.value || terms[0]] || []).length > 0;
+      scheduleText.textContent = !historyMode && hasSchedule ? 'Schedule loaded for selected term.' : 'No Course Schedule Data';
+    };
 
     document.querySelectorAll('.tabs').forEach((group) => {
       group.querySelectorAll('.tab').forEach((tab) => {
@@ -138,13 +207,19 @@
       });
     });
 
-    readBtn?.addEventListener('click', () => { readBtn.textContent = 'Marked read'; readBtn.disabled = true; });
-
     toggleBalance?.addEventListener('click', () => {
-      visible = !visible;
-      if (balance) balance.textContent = visible ? '$1,500.00' : '••••••';
-      toggleBalance.textContent = visible ? 'Hide balance' : 'Show balance';
+      showBalance = !showBalance;
+      balance.textContent = showBalance ? '$2,450.00' : '••••••';
+      toggleBalance.textContent = showBalance ? '◉' : '◎';
     });
+
+    toggleSchedule?.addEventListener('click', () => {
+      historyMode = !historyMode;
+      updateScheduleText();
+    });
+
+    termSelect?.addEventListener('change', updateScheduleText);
+    gradeTerm?.addEventListener('change', renderGrades);
 
     const openModal = () => { if (!modalWrap) return; modalWrap.style.display = 'grid'; modalWrap.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden'; };
     const hideModal = () => { if (!modalWrap) return; modalWrap.style.display = 'none'; modalWrap.setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; if (pdfMessage) pdfMessage.textContent = ''; };
@@ -153,22 +228,31 @@
     closeModal?.addEventListener('click', hideModal);
     modalWrap?.addEventListener('click', (e) => { if (e.target === modalWrap) hideModal(); });
     window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalWrap?.getAttribute('aria-hidden') === 'false') hideModal(); });
-    pdfBtn?.addEventListener('click', () => { if (pdfMessage) pdfMessage.textContent = 'PDF export is not configured yet. This is a placeholder action.'; });
+
+    pdfBtn?.addEventListener('click', () => {
+      if (pdfMessage) pdfMessage.textContent = 'PDF export is not configured yet. This is a placeholder action.';
+    });
 
     csvBtn?.addEventListener('click', () => {
-      const rows = [['Course','Title','Day','Time','Location'],['CS 352','Internet Technology','Mon/Wed','10:20 AM','Hill 116']];
-      const csv = rows.map((row) => row.map((c) => `"${String(c).replaceAll('"','""')}"`).join(',')).join('\n');
+      const rows = scheduleByTerm[termSelect?.value || terms[0]] || [];
+      if (!rows.length) return;
+      const csv = [["Course", "Title", "Day", "Time", "Location"], ...rows]
+        .map((row) => row.map((c) => `"${String(c).replaceAll('"', '""')}"`).join(','))
+        .join('\n');
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'spring-2026-schedule.csv';
+      a.download = `${(termSelect?.value || terms[0]).replace(/\s+/g, '-').toLowerCase()}-schedule.csv`;
       a.style.display = 'none';
       document.body.appendChild(a);
       a.click();
       a.remove();
       URL.revokeObjectURL(url);
     });
+
+    renderGrades();
+    updateScheduleText();
   </script>
 </body>
 </html>
