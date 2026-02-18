@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Local Dashboard Preview</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f4f6f8; }
+    main { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    header { display:flex; justify-content:space-between; align-items:end; margin-bottom:16px; gap:12px; }
+    .grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; }
+    .card { background:white; border:1px solid #d6d6d6; border-radius:12px; padding:16px; min-height:180px; display:flex; flex-direction:column; gap:10px; }
+    .tabs{display:flex; flex-wrap:wrap; gap:6px}
+    .tab{border:1px solid #ccc; background:#f7f7f7; border-radius:999px; padding:4px 8px; cursor:pointer}
+    .tab.active{background:#c4172c; border-color:#c4172c; color:#fff}
+    .actions{margin-top:auto; display:flex; gap:8px; flex-wrap:wrap}
+    button,a{font-size:14px}
+    .ghost{border:1px solid #c4172c; color:#c4172c; background:white; border-radius:8px; padding:6px 10px; cursor:pointer; text-decoration:none}
+    .muted{color:#555; font-style:italic}
+    .modalWrap{position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; place-items:center; padding:16px}
+    .modal{background:#fff; width:min(760px,100%); border-radius:12px; padding:16px; max-height:90vh; overflow:auto}
+    table{width:100%; border-collapse:collapse}
+    th,td{border:1px solid #ddd; padding:8px; text-align:left}
+    @media (max-width:1024px){ .grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
+    @media (max-width:640px){ header{flex-direction:column; align-items:stretch} .grid{grid-template-columns:1fr;} main{padding:12px} }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Dashboard (Local Server)</h1>
+      <label>Current term
+        <select id="termSelect">
+          <option>Fall 2025</option>
+          <option>Spring 2025</option>
+          <option>Fall 2024</option>
+        </select>
+      </label>
+    </header>
+
+    <section class="grid">
+      <article class="card"><h2>Profile</h2><div class="tabs"><button class="tab active" aria-pressed="true">Active</button><button class="tab" aria-pressed="false">History</button></div><p>Name: Alex Scarlet</p><div class="actions"><a class="ghost" href="#">Open profile page</a></div></article>
+      <article class="card"><h2>Notifications</h2><div class="tabs"><button class="tab active" aria-pressed="true">Active</button><button class="tab" aria-pressed="false">History</button></div><ul><li>Advising appointment available.</li><li>Tuition reminder due in 5 days.</li></ul><div class="actions"><button class="ghost" id="readBtn">Mark all as read</button></div></article>
+      <article class="card"><h2>Course Activity</h2><div class="tabs"><button class="tab active" aria-pressed="true">By Course</button><button class="tab" aria-pressed="false">By Date</button><button class="tab" aria-pressed="false">History</button></div><p>CS 352: Assignment 2 submitted.</p></article>
+      <article class="card"><h2>Course Schedule</h2><div class="tabs"><button class="tab active" aria-pressed="true">Active</button><button class="tab" aria-pressed="false">History</button></div><ul id="schedule"><li>CS 352 · Mon/Wed 10:20 AM · Hill 116</li><li>MATH 477 · Tue/Thu 1:10 PM · Allison 203</li></ul><div class="actions"><button class="ghost" id="csvBtn">Export Course Schedule</button></div></article>
+      <article class="card"><h2>Grades</h2><ul><li>CS 352: A</li><li>MATH 477: A-</li></ul><div class="actions"><button class="ghost" id="openTranscript">Unofficial Transcript</button></div></article>
+      <article class="card"><h2>Money</h2><p id="bal">Current balance: •••••</p><div class="actions"><button class="ghost" id="toggleBal">Show balance</button></div></article>
+      <article class="card"><h2>Degree</h2><p>Progress: 84 / 120 credits complete.</p><progress value="84" max="120"></progress></article>
+      <article class="card"><h2>Financial Aid</h2><div class="tabs"><button class="tab active" aria-pressed="true">Grants</button><button class="tab" aria-pressed="false">Loans</button><button class="tab" aria-pressed="false">History</button></div><p>Scarlet Promise Grant — Accepted</p></article>
+    </section>
+  </main>
+
+  <div class="modalWrap" id="transcriptWrap" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="tTitle">
+      <h2 id="tTitle">Unofficial Transcript</h2>
+      <table><thead><tr><th>Course</th><th>Grade</th><th>Term</th></tr></thead><tbody><tr><td>CS 352</td><td>A</td><td>Fall 2025</td></tr><tr><td>MATH 477</td><td>A-</td><td>Fall 2025</td></tr></tbody></table>
+      <div class="actions"><button class="ghost" onclick="window.print()">Open Printable View</button><button class="ghost" id="pdfBtn">Download PDF (Placeholder)</button><button class="ghost" id="closeTranscript">Close</button></div>
+      <p class="muted" id="pdfStatus" aria-live="polite"></p>
+    </section>
+  </div>
+
+  <script>
+    const byId = (id) => document.getElementById(id);
+    const bal = byId('bal');
+    const toggleBal = byId('toggleBal');
+    const readBtn = byId('readBtn');
+    const wrap = byId('transcriptWrap');
+    const openTranscript = byId('openTranscript');
+    const closeTranscript = byId('closeTranscript');
+    const pdfBtn = byId('pdfBtn');
+    const pdfStatus = byId('pdfStatus');
+    const csvBtn = byId('csvBtn');
+
+    let showing = false;
+
+    const closeModal = () => {
+      if (!wrap) return;
+      wrap.style.display = 'none';
+      wrap.setAttribute('aria-hidden', 'true');
+      if (pdfStatus) {
+        pdfStatus.textContent = '';
+      }
+      document.body.style.overflow = '';
+    };
+
+    const openModal = () => {
+      if (!wrap) return;
+      wrap.style.display = 'grid';
+      wrap.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      closeTranscript?.focus();
+    };
+
+    toggleBal?.addEventListener('click', () => {
+      showing = !showing;
+      if (bal) {
+        bal.textContent = `Current balance: ${showing ? '$1,240.00' : '•••••'}`;
+      }
+      toggleBal.textContent = `${showing ? 'Hide' : 'Show'} balance`;
+    });
+
+    readBtn?.addEventListener('click', () => {
+      readBtn.textContent = 'Marked read';
+      readBtn.disabled = true;
+    });
+
+    document.querySelectorAll('.tabs').forEach((group) => {
+      group.querySelectorAll('.tab').forEach((btn) => btn.addEventListener('click', () => {
+        group.querySelectorAll('.tab').forEach((b) => {
+          b.classList.remove('active');
+          b.setAttribute('aria-pressed', 'false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
+      }));
+    });
+
+    openTranscript?.addEventListener('click', openModal);
+    closeTranscript?.addEventListener('click', closeModal);
+
+    wrap?.addEventListener('click', (e) => {
+      if (e.target === wrap) {
+        closeModal();
+      }
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && wrap?.getAttribute('aria-hidden') === 'false') {
+        closeModal();
+      }
+    });
+
+    pdfBtn?.addEventListener('click', () => {
+      if (pdfStatus) {
+        pdfStatus.textContent = 'PDF export is not configured yet. This is a placeholder action.';
+      }
+    });
+
+    const csvEscape = (value) => `"${String(value).replaceAll('"', '""')}"`;
+
+    csvBtn?.addEventListener('click', () => {
+      const rows = [
+        ['Course', 'Day', 'Time', 'Location'],
+        ['CS 352', 'Mon/Wed', '10:20 AM', 'Hill 116'],
+        ['MATH 477', 'Tue/Thu', '1:10 PM', 'Allison 203']
+      ];
+      const csv = rows.map((r) => r.map((c) => csvEscape(c)).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'fall-2025-schedule.csv';
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>
