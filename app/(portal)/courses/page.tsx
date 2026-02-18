@@ -17,6 +17,7 @@ export default function CoursesPage() {
   const { data: grades } = useFetch<any[]>("/api/grades", demoData);
 
   const schedules = useMemo(() => (data?.schedules ?? []).filter((s) => s.term === term), [data, term]);
+  const activities = useMemo(() => (data?.activities ?? []), [data?.activities]);
 
   return (
     <div className="space-y-4">
@@ -29,7 +30,7 @@ export default function CoursesPage() {
           <Button variant="outline" onClick={() => { const rows = schedules.map((s) => [s.course, s.day, s.time, s.location]); const csv = [["Course", "Day", "Time", "Location"], ...rows].map((r) => r.join(",")).join("\n"); const blob = new Blob([csv]); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "schedule.csv"; a.click(); push("Schedule exported"); }}>Export schedule CSV</Button>
         </div>
       )}
-      {tab === "Activity" && <div className="card">{demoData ? <ul>{(data?.activities ?? []).map((a) => <li key={a.id}>{a.course}: {a.text}</li>)}</ul> : "No Course Activity Data"}</div>}
+      {tab === "Activity" && <div className="card">{demoData ? (activities.length ? <ul>{activities.map((a) => <li key={a.id}>{a.course}: {a.text}</li>)}</ul> : "No Course Activity Data") : "No Course Activity Data"}</div>}
       {tab === "Grades" && <div className="card">{demoData ? <ul>{(grades ?? []).map((g) => <li key={g.id}>{g.course} - {g.grade}</li>)}</ul> : "No grades data"}</div>}
       {tab === "Absence" && <div className="card">{absences.length ? <ul>{absences.map((a, i) => <li key={i}>{a.date} · {a.course} · {a.reason}</li>)}</ul> : "No submitted absences"}</div>}
     </div>

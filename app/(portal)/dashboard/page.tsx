@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { UserRound } from "lucide-react";
 import { useFetch } from "@/lib/useFetch";
 import { usePortalStore } from "@/lib/store";
 import { Dialog } from "@/app/components/ui/dialog";
@@ -12,27 +13,49 @@ import { Table } from "@/app/components/ui/table";
 import { useToast } from "@/app/components/ui/toast";
 import { GradeItem, NotificationItem } from "@/types/models";
 
+type User = {
+  name: string;
+  netId: string;
+  ruid: string;
+  email: string;
+  college: string;
+  major: string;
+};
+
+type CourseData = {
+  schedules: Array<{ id: string; course: string; title: string; day: string; time: string; location: string; term: string }>;
+  activities: Array<{ id: string; course: string; kind: string; text: string; date: string }>;
+};
+
+type AidData = {
+  awards: Array<{ id: string; name: string; amount: number; status: string; year: string }>;
+  year: string;
+};
+
 export default function DashboardPage() {
   const { push } = useToast();
   const store = usePortalStore();
-  const { data: user } = useFetch<{ name: string; netId: string; ruid: string; email: string; college: string; major: string }>("/api/user", store.demoData);
+
+  const { data: user } = useFetch<User>("/api/user", store.demoData);
   const { data: notifData } = useFetch<NotificationItem[]>("/api/notifications", store.demoData);
-  const { data: coursesData } = useFetch<{ schedules: Array<{ id: string; course: string; title: string; day: string; time: string; location: string; term: string }>; activities: Array<{ id: string; course: string; kind: string; text: string; date: string }> }>("/api/courses", store.demoData);
+  const { data: coursesData } = useFetch<CourseData>("/api/courses", store.demoData);
   const { data: gradesData } = useFetch<GradeItem[]>("/api/grades", store.demoData);
-  const { data: aidData } = useFetch<{ awards: Array<{ id: string; name: string; amount: number; status: string; year: string }>; year: string }>("/api/financial-aid", store.demoData);
+  const { data: aidData } = useFetch<AidData>("/api/financial-aid", store.demoData);
 
   const [notifTab, setNotifTab] = useState("Active");
   const [activityTab, setActivityTab] = useState("By Course");
   const [activitySubtab, setActivitySubtab] = useState("Activity");
   const [scheduleTerm, setScheduleTerm] = useState("Spring 2026");
-  const [gradesTerm, setGradesTerm] = useState("Fall 2025");
+  const [gradesTerm, setGradesTerm] = useState("Spring 2026");
   const [aidTab, setAidTab] = useState("Award");
+  const gradeTermOptions = ["Spring 2026", "Fall 2025", "Spring 2025", "Fall 2024", "Spring 2024", "Fall 2023"];
 
   const [modal, setModal] = useState<string | null>(null);
   const [selectedNotification, setSelectedNotification] = useState<NotificationItem | null>(null);
   const [selectedGrade, setSelectedGrade] = useState<GradeItem | null>(null);
 
   const notifications = useMemo(() => (store.demoData ? notifData ?? [] : []), [store.demoData, notifData]);
+  const activities = useMemo(() => (store.demoData ? coursesData?.activities ?? [] : []), [store.demoData, coursesData]);
   const grades = useMemo(() => (store.demoData ? (gradesData ?? []).filter((g) => g.term === gradesTerm) : []), [store.demoData, gradesData, gradesTerm]);
   const schedules = useMemo(() => (store.demoData ? (coursesData?.schedules ?? []).filter((s) => s.term === scheduleTerm) : []), [store.demoData, coursesData, scheduleTerm]);
 
@@ -58,7 +81,9 @@ export default function DashboardPage() {
           <h2 className="card-title">User Profile</h2>
           {store.demoData && user ? (
             <>
-              <button className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-slate-200 text-3xl" onClick={() => setModal("profile")}>👤</button>
+              <button className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-slate-200" onClick={() => setModal("profile")}>
+                <UserRound className="h-10 w-10 text-slate-500" />
+              </button>
               <p className="mt-2 text-center text-xl font-semibold">{user.name}</p>
               <p className="text-center text-slate-600">NetID: {user.netId}</p>
               <p className="text-center text-slate-600">RUID: {user.ruid}</p>
@@ -117,9 +142,9 @@ export default function DashboardPage() {
           <h2 className="card-title">My Course Activity</h2>
           <Tabs options={["By Course", "By Date", "By History"]} value={activityTab} onChange={setActivityTab} />
           <Tabs options={["Activity", "Grades"]} value={activitySubtab} onChange={setActivitySubtab} />
-          {store.demoData ? (
+          {activities.length ? (
             <ul className="space-y-2 text-sm">
-              {(coursesData?.activities ?? []).map((a) => (
+              {activities.map((a) => (
                 <li key={a.id} className="rounded border p-2">
                   <button onClick={() => setModal("activity-detail")}>{a.course}: {a.text}</button>
                   <Link className="ml-2 text-rutgers" href={`/courses?course=${a.course}`}>Go to course</Link>
@@ -136,7 +161,7 @@ export default function DashboardPage() {
           <Select value={scheduleTerm} onChange={setScheduleTerm} options={["Spring 2026", "Fall 2025", "Summer 2025"]} />
           {schedules.length ? (
             <ul className="my-2 space-y-1 text-sm">
-              {schedules.map((s) => <li key={s.id}>{s.course} · {s.day} {s.time}</li>)}
+              {schedules.map((s) => <li key={s.id}>{s.course} - {s.day} {s.time}</li>)}
             </ul>
           ) : (
             <p className="my-4 text-slate-500">No Course Schedule Data</p>
@@ -148,7 +173,7 @@ export default function DashboardPage() {
 
         <article className="card">
           <h2 className="card-title">My Grades</h2>
-          <Select value={gradesTerm} onChange={setGradesTerm} options={["Fall 2025", "Spring 2026", "Summer 2025"]} />
+          <Select value={gradesTerm} onChange={setGradesTerm} options={gradeTermOptions} />
           {grades.length ? (
             <ul className="my-2 space-y-2">
               {grades.map((g) => (
@@ -166,16 +191,10 @@ export default function DashboardPage() {
 
         <article className="card">
           <h2 className="card-title">My Money</h2>
-          <div className="rounded-lg bg-rutgers p-3 text-white">
-            <div className="flex items-center justify-between"><span>Account Balance</span><button onClick={() => store.setHideMoney(!store.hideMoney)}>👁</button></div>
-            <p className="text-2xl font-bold">{store.hideMoney ? "••••••" : "$2,450.00"}</p>
-          </div>
-          <p className="flex justify-between text-sm"><span>Payment Due</span><strong>{store.hideMoney ? "••••" : "$1,500.00"}</strong></p>
-          <p className="flex justify-between text-sm"><span>Billable Credit Hours</span><strong>15</strong></p>
-          <div className="flex gap-2 border-t pt-2">
-            <Button variant="outline" onClick={() => (window.location.href = "/money")}>View Billing</Button>
-            <Button variant="outline" onClick={() => setModal("payment")}>Make Payment</Button>
-          </div>
+          <p className="rounded border border-yellow-300 bg-yellow-50 p-3 text-yellow-900">Service unavailable right now.</p>
+          <p className="text-slate-500">No data available.</p>
+          <hr className="my-1" />
+          <Button variant="outline" onClick={() => (window.location.href = "/money")}>Open Money Page</Button>
         </article>
 
         <article className="card">
@@ -185,7 +204,7 @@ export default function DashboardPage() {
           <div className="grid grid-cols-3 gap-2">
             {[["3.8", "Last Semester"], ["3.7", "Cumulative"], ["90", "Total Degree"]].map(([v, label]) => (
               <button key={label} onClick={() => setModal("gpa")} className="rounded-full border-4 border-rutgers p-3 text-center">
-                <div className="font-bold">{store.hideGpa ? "•" : v}</div>
+                <div className="font-bold">{store.hideGpa ? "*" : v}</div>
                 <div className="text-xs text-slate-500">{label}</div>
               </button>
             ))}
@@ -195,16 +214,11 @@ export default function DashboardPage() {
         <article className="card">
           <h2 className="card-title">My Financial Aid</h2>
           <Tabs options={["Apply", "Docs", "Notifs", "Award"]} value={aidTab} onChange={setAidTab} />
-          {aidTab === "Award" && store.demoData ? (
+          {aidTab === "Award" ? (
             <>
-              <p className="text-sm text-slate-500">Award Year</p>
-              <p className="font-medium">{aidData?.year}</p>
-              <div className="rounded bg-slate-100 p-2">
-                <p className="text-sm">Award Summary</p>
-                <div className="my-1 h-2 rounded bg-green-500" />
-                <p className="font-semibold">$15,000</p>
-              </div>
-              <Button onClick={() => setModal("award")}>Award Detail and Information</Button>
+              <p className="rounded border border-yellow-300 bg-yellow-50 p-3 text-yellow-900">Service unavailable right now.</p>
+              <p className="text-slate-500">No data available.</p>
+              <Button variant="outline" onClick={() => (window.location.href = "/financial-aid")}>Open Financial Aid Page</Button>
             </>
           ) : (
             <p className="text-slate-500">No records for this tab.</p>
@@ -212,7 +226,7 @@ export default function DashboardPage() {
         </article>
       </div>
 
-      <Dialog open={modal === "profile"} onClose={() => setModal(null)} title="Profile Summary"><p>{user?.name} · {user?.email}</p></Dialog>
+      <Dialog open={modal === "profile"} onClose={() => setModal(null)} title="Profile Summary"><p>{user?.name} - {user?.email}</p></Dialog>
       {[
         ["change-password", "Change Password"],
         ["privacy", "Directory Privacy"],
@@ -231,15 +245,15 @@ export default function DashboardPage() {
       </Dialog>
       <Dialog open={modal === "activity-detail"} onClose={() => setModal(null)} title="Activity Detail"><p>Assignment detail modal. <Link href="/courses">View Full Page</Link></p></Dialog>
       <Dialog open={modal === "absence"} onClose={() => setModal(null)} title="Self Reporting Absence">
-        <form className="grid gap-2" onSubmit={(e) => { e.preventDefault(); store.addAbsence({ date: "2026-02-10", course: "CS 352", reason: "Medical" }); push("Absence submitted"); setModal(null); }}>
+        <form className="grid gap-2" onSubmit={(e) => { e.preventDefault(); store.addAbsence({ date: "2026-02-10", course: "Operating Systems", reason: "Medical" }); push("Absence submitted"); setModal(null); }}>
           <input className="rounded border p-2" type="date" required />
-          <select className="rounded border p-2" required><option>CS 352</option><option>MATH 477</option></select>
+          <select className="rounded border p-2" required><option>Operating Systems</option><option>Machine Learning</option><option>Computer Systems</option></select>
           <textarea className="rounded border p-2" required placeholder="Reason" />
           <Button type="submit">Submit</Button>
         </form>
       </Dialog>
       <Dialog open={modal === "grade-detail"} onClose={() => setModal(null)} title="Grade Detail">
-        {selectedGrade && <p>{selectedGrade.course} · {selectedGrade.credits} credits · {selectedGrade.instructor}</p>}
+        {selectedGrade && <p>{selectedGrade.course} - {selectedGrade.credits} credits{selectedGrade.instructor ? ` - ${selectedGrade.instructor}` : ""}</p>}
         <Link href="/courses?tab=grades" className="text-rutgers">View Full Page</Link>
       </Dialog>
       <Dialog open={modal === "transcript"} onClose={() => setModal(null)} title="Unofficial Transcript">
@@ -263,7 +277,10 @@ export default function DashboardPage() {
       <Dialog open={modal === "gpa"} onClose={() => setModal(null)} title="GPA Breakdown"><p>Detailed GPA breakdown. <Link href="/degree">View Full Page</Link></p></Dialog>
       <Dialog open={modal === "award"} onClose={() => setModal(null)} title="Award Detail">
         <ul className="mb-2 list-disc pl-6 text-sm">{(aidData?.awards ?? []).map((a) => <li key={a.id}>{a.name} - ${a.amount}</li>)}</ul>
-        <div className="flex gap-2"><Button variant="outline" onClick={() => exportCsv("award-summary.csv", ["Award", "Amount", "Status"], (aidData?.awards ?? []).map((a) => [a.name, String(a.amount), a.status]))}>Download Award Summary CSV</Button><Button variant="outline" onClick={() => (window.location.href = "/financial-aid?tab=docs")}>View docs needed</Button></div>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => exportCsv("award-summary.csv", ["Award", "Amount", "Status"], (aidData?.awards ?? []).map((a) => [a.name, String(a.amount), a.status]))}>Download Award Summary CSV</Button>
+          <Button variant="outline" onClick={() => (window.location.href = "/financial-aid?tab=docs")}>View docs needed</Button>
+        </div>
       </Dialog>
     </div>
   );
