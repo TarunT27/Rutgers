@@ -21,7 +21,11 @@ export const schedules: CourseScheduleItem[] = [
   { id: "s3", course: "Computer Systems", title: "Computer Systems", day: "Friday", time: "5:00 PM - 7:00 PM", location: "Busch Campus", term: "Spring 2026" }
 ];
 
-export const activities: ActivityItem[] = [];
+export const activities: ActivityItem[] = [
+  { id: "a1", course: "Operating Systems", kind: "assignment", text: "HW3 submitted", date: "2026-02-05" },
+  { id: "a2", course: "Machine Learning", kind: "grade", text: "Quiz 2 graded – 92/100", date: "2026-02-03" },
+  { id: "a3", course: "Computer Systems", kind: "assignment", text: "Lab 4 due in 2 days", date: "2026-02-01" }
+];
 
 export const grades: GradeItem[] = [
   { id: "g1", course: "Operating Systems", major: "Computer Science", grade: "A-", credits: 3, instructor: "", term: "Spring 2026" },

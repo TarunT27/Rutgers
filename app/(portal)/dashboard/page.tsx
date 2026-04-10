@@ -32,6 +32,21 @@ type AidData = {
   year: string;
 };
 
+type MoneyData = {
+  accountBalance: number;
+  paymentDue: number;
+  billableCredits: number;
+  transactions: Array<{ id: string; date: string; description: string; amount: number }>;
+};
+
+type DegreeData = {
+  major: string;
+  school: string;
+  gpaLast: number;
+  gpaCumulative: number;
+  credits: number;
+};
+
 export default function DashboardPage() {
   const { push } = useToast();
   const store = usePortalStore();
@@ -41,6 +56,8 @@ export default function DashboardPage() {
   const { data: coursesData } = useFetch<CourseData>("/api/courses", store.demoData);
   const { data: gradesData } = useFetch<GradeItem[]>("/api/grades", store.demoData);
   const { data: aidData } = useFetch<AidData>("/api/financial-aid", store.demoData);
+  const { data: moneyData } = useFetch<MoneyData>("/api/money", store.demoData);
+  const { data: degreeData } = useFetch<DegreeData>("/api/degree", store.demoData);
 
   const [notifTab, setNotifTab] = useState("Active");
   const [activityTab, setActivityTab] = useState("By Course");
@@ -53,10 +70,20 @@ export default function DashboardPage() {
   const [modal, setModal] = useState<string | null>(null);
   const [selectedNotification, setSelectedNotification] = useState<NotificationItem | null>(null);
   const [selectedGrade, setSelectedGrade] = useState<GradeItem | null>(null);
+  const [localReadIds, setLocalReadIds] = useState<Set<string>>(new Set());
 
-  const notifications = useMemo(() => (store.demoData ? notifData ?? [] : []), [store.demoData, notifData]);
+  const markRead = (id: string) => {
+    store.markNotificationRead(id);
+    setLocalReadIds((prev) => new Set([...prev, id]));
+  };
+
+  const notifications = useMemo(
+    () => (store.demoData ? (notifData ?? []).map((n) => ({ ...n, read: n.read || localReadIds.has(n.id) })) : []),
+    [store.demoData, notifData, localReadIds]
+  );
   const activities = useMemo(() => (store.demoData ? coursesData?.activities ?? [] : []), [store.demoData, coursesData]);
   const grades = useMemo(() => (store.demoData ? (gradesData ?? []).filter((g) => g.term === gradesTerm) : []), [store.demoData, gradesData, gradesTerm]);
+  const allGrades = useMemo(() => (store.demoData ? gradesData ?? [] : []), [store.demoData, gradesData]);
   const schedules = useMemo(() => (store.demoData ? (coursesData?.schedules ?? []).filter((s) => s.term === scheduleTerm) : []), [store.demoData, coursesData, scheduleTerm]);
 
   const exportCsv = (filename: string, headers: string[], rows: string[][]) => {
@@ -129,7 +156,7 @@ export default function DashboardPage() {
               {notifications.filter((n) => (notifTab === "Active" ? !n.read : n.read)).map((n) => (
                 <li key={n.id} className="rounded border p-2">
                   <button className="text-left" onClick={() => { setSelectedNotification(n); setModal("notification-detail"); }}>{n.title}</button>
-                  {!n.read && <button className="ml-2 text-rutgers" onClick={() => store.markNotificationRead(n.id)}>Mark as read</button>}
+                  {!n.read && <button className="ml-2 text-rutgers" onClick={() => markRead(n.id)}>Mark as read</button>}
                 </li>
               ))}
             </ul>
@@ -191,20 +218,40 @@ export default function DashboardPage() {
 
         <article className="card">
           <h2 className="card-title">My Money</h2>
-          <p className="rounded border border-yellow-300 bg-yellow-50 p-3 text-yellow-900">Service unavailable right now.</p>
-          <p className="text-slate-500">No data available.</p>
+          {store.demoData && moneyData ? (
+            <>
+              <div className="rounded-xl bg-rutgers p-3 text-white">
+                <p className="text-sm">Account Balance</p>
+                <p className="text-3xl font-bold">{store.hideMoney ? "$****.**" : `$${moneyData.accountBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })}`}</p>
+              </div>
+              <p className="mt-2 flex justify-between text-sm">
+                <span className="text-slate-600">Payment Due</span>
+                <strong>{store.hideMoney ? "$****.**" : `$${moneyData.paymentDue.toLocaleString(undefined, { minimumFractionDigits: 2 })}`}</strong>
+              </p>
+              <p className="flex justify-between text-sm">
+                <span className="text-slate-600">Billable Credits</span>
+                <strong>{moneyData.billableCredits}</strong>
+              </p>
+            </>
+          ) : (
+            <p className="text-slate-500">No data available.</p>
+          )}
           <hr className="my-1" />
           <Button variant="outline" onClick={() => (window.location.href = "/money")}>Open Money Page</Button>
         </article>
 
         <article className="card">
           <h2 className="card-title">My Degree</h2>
-          <p className="font-semibold">Computer Science</p>
-          <p className="text-slate-600">Newark College of Arts & Sciences</p>
+          <p className="font-semibold">{degreeData?.major ?? "Computer Science"}</p>
+          <p className="text-slate-600">{degreeData?.school ?? "Newark College of Arts & Sciences"}</p>
           <div className="grid grid-cols-3 gap-2">
-            {[["3.8", "Last Semester"], ["3.7", "Cumulative"], ["90", "Total Degree"]].map(([v, label]) => (
+            {[
+              { value: degreeData?.gpaLast ?? "—", label: "Last Semester" },
+              { value: degreeData?.gpaCumulative ?? "—", label: "Cumulative" },
+              { value: degreeData?.credits ?? "—", label: "Total Credits" }
+            ].map(({ value, label }) => (
               <button key={label} onClick={() => setModal("gpa")} className="rounded-full border-4 border-rutgers p-3 text-center">
-                <div className="font-bold">{store.hideGpa ? "*" : v}</div>
+                <div className="font-bold">{store.hideGpa ? "*" : value}</div>
                 <div className="text-xs text-slate-500">{label}</div>
               </button>
             ))}
@@ -215,14 +262,21 @@ export default function DashboardPage() {
           <h2 className="card-title">My Financial Aid</h2>
           <Tabs options={["Apply", "Docs", "Notifs", "Award"]} value={aidTab} onChange={setAidTab} />
           {aidTab === "Award" ? (
-            <>
-              <p className="rounded border border-yellow-300 bg-yellow-50 p-3 text-yellow-900">Service unavailable right now.</p>
+            store.demoData && aidData ? (
+              <>
+                <p className="text-sm text-slate-600">Award Year: {aidData.year}</p>
+                <p className="text-2xl font-semibold text-slate-900">
+                  ${(aidData.awards ?? []).reduce((s, a) => s + a.amount, 0).toLocaleString()}
+                </p>
+                <Button variant="outline" onClick={() => setModal("award")}>Award Detail and Information</Button>
+              </>
+            ) : (
               <p className="text-slate-500">No data available.</p>
-              <Button variant="outline" onClick={() => (window.location.href = "/financial-aid")}>Open Financial Aid Page</Button>
-            </>
+            )
           ) : (
             <p className="text-slate-500">No records for this tab.</p>
           )}
+          <Button variant="outline" onClick={() => (window.location.href = "/financial-aid")}>Open Financial Aid Page</Button>
         </article>
       </div>
 
@@ -259,11 +313,11 @@ export default function DashboardPage() {
       <Dialog open={modal === "transcript"} onClose={() => setModal(null)} title="Unofficial Transcript">
         <Table>
           <thead><tr><th className="border p-2">Course</th><th className="border p-2">Grade</th><th className="border p-2">Term</th></tr></thead>
-          <tbody>{grades.map((g) => <tr key={g.id}><td className="border p-2">{g.course}</td><td className="border p-2">{g.grade}</td><td className="border p-2">{g.term}</td></tr>)}</tbody>
+          <tbody>{allGrades.map((g) => <tr key={g.id}><td className="border p-2">{g.course}</td><td className="border p-2">{g.grade}</td><td className="border p-2">{g.term}</td></tr>)}</tbody>
         </Table>
         <div className="mt-3 flex gap-2">
           <Button variant="outline" onClick={() => window.open("/print/transcript", "_blank")}>Open Printable View</Button>
-          <Button variant="outline" onClick={() => exportCsv("transcript.txt", ["Course", "Grade", "Term"], grades.map((g) => [g.course, g.grade, g.term]))}>Download PDF (Placeholder)</Button>
+          <Button variant="outline" onClick={() => exportCsv("transcript.txt", ["Course", "Grade", "Term"], allGrades.map((g) => [g.course, g.grade, g.term]))}>Download PDF (Placeholder)</Button>
           <Button variant="outline" onClick={() => setModal(null)}>Close</Button>
         </div>
       </Dialog>

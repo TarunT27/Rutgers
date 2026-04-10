@@ -9,7 +9,7 @@ export default function IdCardPage() {
       <h1 className="text-3xl font-bold">ID Card Preview</h1>
       <div className="card max-w-md">
         <p className="font-semibold">Tarun Tata</p>
-        <p className="text-sm text-slate-600">RUID: 123456789</p>
+        <p className="text-sm text-slate-600">RUID: 284761935</p>
       </div>
       <button className="rounded bg-rutgers px-3 py-2 text-white" onClick={() => {
         const data = "ID CARD PLACEHOLDER";
