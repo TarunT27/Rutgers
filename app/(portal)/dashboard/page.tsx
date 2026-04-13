@@ -149,6 +149,26 @@ export default function DashboardPage() {
         </article>
 
         <article className="card">
+          <h2 className="card-title">My Term Bill</h2>
+          {store.demoData && moneyData ? (
+            <>
+              <div className="mb-4 rounded-xl bg-slate-100 p-4 dark:bg-slate-800">
+                <p className="text-sm text-slate-600 dark:text-slate-400">Current Balance</p>
+                <p className="text-3xl font-bold text-rutgers">
+                  {store.hideMoney ? "$****.**" : `$${moneyData.paymentDue.toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
+                </p>
+                <p className="mt-1 text-xs text-slate-500">Due: Spring 2026 Term</p>
+              </div>
+              <Button variant="outline" className="w-full" onClick={() => (window.location.href = "/term-bill")}>
+                View Full Term Bill
+              </Button>
+            </>
+          ) : (
+            <p className="text-slate-500">No term bill data available.</p>
+          )}
+        </article>
+
+        <article className="card">
           <h2 className="card-title">My Notifications</h2>
           <Tabs options={["Active", "History"]} value={notifTab} onChange={setNotifTab} />
           {notifications.filter((n) => (notifTab === "Active" ? !n.read : n.read)).length ? (
@@ -214,30 +234,6 @@ export default function DashboardPage() {
             <p className="my-3 text-slate-500">No grades data.</p>
           )}
           <button className="text-left text-rutgers" onClick={() => setModal("transcript")}>Unofficial Transcript</button>
-        </article>
-
-        <article className="card">
-          <h2 className="card-title">My Money</h2>
-          {store.demoData && moneyData ? (
-            <>
-              <div className="rounded-xl bg-rutgers p-3 text-white">
-                <p className="text-sm">Account Balance</p>
-                <p className="text-3xl font-bold">{store.hideMoney ? "$****.**" : `$${moneyData.accountBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })}`}</p>
-              </div>
-              <p className="mt-2 flex justify-between text-sm">
-                <span className="text-slate-600">Payment Due</span>
-                <strong>{store.hideMoney ? "$****.**" : `$${moneyData.paymentDue.toLocaleString(undefined, { minimumFractionDigits: 2 })}`}</strong>
-              </p>
-              <p className="flex justify-between text-sm">
-                <span className="text-slate-600">Billable Credits</span>
-                <strong>{moneyData.billableCredits}</strong>
-              </p>
-            </>
-          ) : (
-            <p className="text-slate-500">No data available.</p>
-          )}
-          <hr className="my-1" />
-          <Button variant="outline" onClick={() => (window.location.href = "/money")}>Open Money Page</Button>
         </article>
 
         <article className="card">
