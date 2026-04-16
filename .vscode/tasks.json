@@ -8,6 +8,13 @@
       "args": ["run", "dev"],
       "isBackground": true,
       "problemMatcher": []
+    },
+    {
+      "label": "commit_push",
+      "type": "shell",
+      "command": "git add . && git commit -m \"Add degree navigator, update credits, and remove demo data toggle\" && git push",
+      "isBackground": false,
+      "problemMatcher": []
     }
   ]
 }
