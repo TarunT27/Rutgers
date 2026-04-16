@@ -16,6 +16,7 @@ const nav = [
   { href: "/notifications", label: "Notifications", icon: Bell },
   { href: "/money", label: "Money", icon: DollarSign },
   { href: "/degree", label: "Degree", icon: WalletCards },
+  { href: "/degree-navigator", label: "Degree Navigator", icon: GraduationCap },
   { href: "/financial-aid", label: "Financial Aid", icon: WalletCards },
   { href: "/settings", label: "Settings", icon: Settings },
   { href: "/help", label: "Help", icon: CircleHelp }
@@ -77,10 +78,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </div>
 
             <div className="flex items-center gap-3 text-sm">
-              <label className="flex items-center gap-1">
-                Demo Data
-                <input type="checkbox" checked={demoData} onChange={(e) => setDemoData(e.target.checked)} />
-              </label>
               <button onClick={() => setQuickAddOpen(true)} aria-label="Add" className="rounded p-2 hover:bg-slate-100"><Plus /></button>
               <button onClick={() => router.push("/notifications")} aria-label="Notifications" className="rounded p-2 hover:bg-slate-100"><Bell /></button>
               <button onClick={() => router.push("/search")} aria-label="Search" className="rounded p-2 hover:bg-slate-100"><Search /></button>

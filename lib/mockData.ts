@@ -28,26 +28,26 @@ export const activities: ActivityItem[] = [
 ];
 
 export const grades: GradeItem[] = [
-  { id: "g1", course: "Operating Systems", major: "Computer Science", grade: "A-", credits: 3, instructor: "", term: "Spring 2026" },
-  { id: "g2", course: "Machine Learning", major: "Computer Science", grade: "A", credits: 3, instructor: "", term: "Spring 2026" },
+  { id: "g1", course: "Operating Systems", major: "Computer Science", grade: "A-", credits: 6, instructor: "", term: "Spring 2026" },
+  { id: "g2", course: "Machine Learning", major: "Computer Science", grade: "A", credits: 6, instructor: "", term: "Spring 2026" },
   { id: "g3", course: "Computer Systems", major: "Computer Science", grade: "A", credits: 3, instructor: "", term: "Spring 2026" },
-  { id: "g4", course: "General Chemistry I", major: "Computer Science", grade: "B", credits: 4, instructor: "", term: "Fall 2025" },
-  { id: "g5", course: "Data Structures", major: "Computer Science", grade: "A", credits: 3, instructor: "", term: "Fall 2025" },
-  { id: "g6", course: "America in the 1960s", major: "Computer Science", grade: "B", credits: 3, instructor: "", term: "Fall 2025" },
-  { id: "g7", course: "Data Structures", major: "Computer Science", grade: "B", credits: 3, instructor: "", term: "Spring 2025" },
-  { id: "g8", course: "English Composition 102", major: "Computer Science", grade: "B", credits: 3, instructor: "", term: "Spring 2025" },
-  { id: "g9", course: "Intro to Logic", major: "Computer Science", grade: "B", credits: 3, instructor: "", term: "Spring 2025" },
-  { id: "g10", course: "Design Fundamentals", major: "Computer Science", grade: "C", credits: 3, instructor: "", term: "Fall 2024" },
-  { id: "g11", course: "Computer&Program II", major: "Computer Science", grade: "B", credits: 3, instructor: "", term: "Fall 2024" },
-  { id: "g12", course: "Intro to Sociology", major: "Computer Science", grade: "B", credits: 3, instructor: "", term: "Fall 2024" },
-  { id: "g13", course: "Computer&Program I", major: "Unspecified (Matriculating)", grade: "B+", credits: 3, instructor: "", term: "Spring 2024" },
-  { id: "g14", course: "History West Civ I", major: "Unspecified (Matriculating)", grade: "B", credits: 3, instructor: "", term: "Spring 2024" },
-  { id: "g15", course: "Prin of Psychology 102", major: "Unspecified (Matriculating)", grade: "A", credits: 3, instructor: "", term: "Spring 2024" },
-  { id: "g16", course: "Writing Workshop", major: "Unspecified (Matriculating)", grade: "U", credits: 1, instructor: "", term: "Fall 2023" },
-  { id: "g17", course: "English Composition", major: "Unspecified (Matriculating)", grade: "D", credits: 3, instructor: "", term: "Fall 2023" },
-  { id: "g18", course: "Hist Islamic Civ I", major: "Unspecified (Matriculating)", grade: "B", credits: 3, instructor: "", term: "Fall 2023" },
-  { id: "g19", course: "Precalculus", major: "Unspecified (Matriculating)", grade: "A-", credits: 4, instructor: "", term: "Fall 2023" },
-  { id: "g20", course: "Prin of Psychology", major: "Unspecified (Matriculating)", grade: "B+", credits: 3, instructor: "", term: "Fall 2023" }
+  { id: "g4", course: "General Chemistry I", major: "Computer Science", grade: "B", credits: 6, instructor: "", term: "Fall 2025" },
+  { id: "g5", course: "Data Structures", major: "Computer Science", grade: "A", credits: 6, instructor: "", term: "Fall 2025" },
+  { id: "g6", course: "America in the 1960s", major: "Computer Science", grade: "B", credits: 6, instructor: "", term: "Fall 2025" },
+  { id: "g7", course: "Data Structures", major: "Computer Science", grade: "B", credits: 6, instructor: "", term: "Spring 2025" },
+  { id: "g8", course: "English Composition 102", major: "Computer Science", grade: "B", credits: 5, instructor: "", term: "Spring 2025" },
+  { id: "g9", course: "Intro to Logic", major: "Computer Science", grade: "B", credits: 5, instructor: "", term: "Spring 2025" },
+  { id: "g10", course: "Design Fundamentals", major: "Computer Science", grade: "C", credits: 5, instructor: "", term: "Fall 2024" },
+  { id: "g11", course: "Computer&Program II", major: "Computer Science", grade: "B", credits: 5, instructor: "", term: "Fall 2024" },
+  { id: "g12", course: "Intro to Sociology", major: "Computer Science", grade: "B", credits: 5, instructor: "", term: "Fall 2024" },
+  { id: "g13", course: "Computer&Program I", major: "Unspecified (Matriculating)", grade: "B+", credits: 5, instructor: "", term: "Spring 2024" },
+  { id: "g14", course: "History West Civ I", major: "Unspecified (Matriculating)", grade: "B", credits: 5, instructor: "", term: "Spring 2024" },
+  { id: "g15", course: "Prin of Psychology 102", major: "Unspecified (Matriculating)", grade: "A", credits: 5, instructor: "", term: "Spring 2024" },
+  { id: "g16", course: "Writing Workshop", major: "Unspecified (Matriculating)", grade: "U", credits: 6, instructor: "", term: "Fall 2023" },
+  { id: "g17", course: "English Composition", major: "Unspecified (Matriculating)", grade: "D", credits: 6, instructor: "", term: "Fall 2023" },
+  { id: "g18", course: "Hist Islamic Civ I", major: "Unspecified (Matriculating)", grade: "B", credits: 6, instructor: "", term: "Fall 2023" },
+  { id: "g19", course: "Precalculus", major: "Unspecified (Matriculating)", grade: "A-", credits: 6, instructor: "", term: "Fall 2023" },
+  { id: "g20", course: "Prin of Psychology", major: "Unspecified (Matriculating)", grade: "B+", credits: 6, instructor: "", term: "Fall 2023" }
 ];
 
 export const money: MoneyState = {
@@ -61,7 +61,7 @@ export const money: MoneyState = {
 };
 
 export const aidAwards: AidAward[] = [
-  { id: "aw1", name: "Scarlet Promise Grant", amount: 12000, status: "Accepted", year: "2025-2026" },
+  { id: "aw1", name: "Scarlet Promise Grant", amount: 3600, status: "Accepted", year: "2025-2026" },
   { id: "aw2", name: "Federal Direct Loan", amount: 3000, status: "Accepted", year: "2025-2026" }
 ];
 

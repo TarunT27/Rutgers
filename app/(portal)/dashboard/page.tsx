@@ -308,12 +308,12 @@ export default function DashboardPage() {
       </Dialog>
       <Dialog open={modal === "transcript"} onClose={() => setModal(null)} title="Unofficial Transcript">
         <Table>
-          <thead><tr><th className="border p-2">Course</th><th className="border p-2">Grade</th><th className="border p-2">Term</th></tr></thead>
-          <tbody>{allGrades.map((g) => <tr key={g.id}><td className="border p-2">{g.course}</td><td className="border p-2">{g.grade}</td><td className="border p-2">{g.term}</td></tr>)}</tbody>
+          <thead><tr><th className="border p-2">Course</th><th className="border p-2">Grade</th><th className="border p-2">Credits</th><th className="border p-2">Term</th></tr></thead>
+          <tbody>{allGrades.map((g) => <tr key={g.id}><td className="border p-2">{g.course}</td><td className="border p-2">{g.grade}</td><td className="border p-2">{g.credits}</td><td className="border p-2">{g.term}</td></tr>)}</tbody>
         </Table>
         <div className="mt-3 flex gap-2">
           <Button variant="outline" onClick={() => window.open("/print/transcript", "_blank")}>Open Printable View</Button>
-          <Button variant="outline" onClick={() => exportCsv("transcript.txt", ["Course", "Grade", "Term"], allGrades.map((g) => [g.course, g.grade, g.term]))}>Download PDF (Placeholder)</Button>
+          <Button variant="outline" onClick={() => exportCsv("transcript.txt", ["Course", "Grade", "Credits", "Term"], allGrades.map((g) => [g.course, g.grade, String(g.credits), g.term]))}>Download PDF (Placeholder)</Button>
           <Button variant="outline" onClick={() => setModal(null)}>Close</Button>
         </div>
       </Dialog>
